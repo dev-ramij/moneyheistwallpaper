@@ -6,7 +6,7 @@ import AllImages from './tabs/all';
 const animated = require('../database/animated.json');
 const quotes = require('../database/quotes.json');
 const others = require('../database/others.json');
-var allimage = [...animated, ...quotes, ...others]
+var allimage = [...others,...animated, ...quotes, ]
 const FirstRoute = () => (
     <AllImages images={allimage} />
 );

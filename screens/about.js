@@ -38,6 +38,7 @@ class AboutPage extends Component {
                     size={25}
                     color='blue'
                     style={styles.icon}
+                    onPress={() => Linking.openURL('https://www.facebook.com/The-CREED-106664711096633/')}
                 />
             </View>
             <View style={{marginTop:20,alignItems:'center'}}>
