@@ -27,10 +27,10 @@ const rootDrawerNavigator = createDrawerNavigator({
         drawerPosition: 'left',
         contentComponent: (props) => (
             <View style={styles.container}>
-                <ImageBackground source={{ uri: 'https://i.ibb.co/DwQdqXS/Pics-Art-06-05-02-49-50.jpg' }}
+                <ImageBackground source={{ uri: 'https://i.ibb.co/tm6dMb6/20200714-104822.png' }}
                     style={styles.backgroundImage}>
 
-                    <Text style={styles.sideBarText}>LA CASA DE PAPEL</Text>
+                    {/* <Text style={styles.sideBarText}></Text> */}
                 </ImageBackground>
 
                 <ScrollView>
@@ -58,9 +58,9 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         width: '100%',
-        height: 200,
-        alignItems: 'center',
-        justifyContent: 'center'
+        height: 150,
+        // alignItems: 'center',
+        // justifyContent: 'center'
     },
 });
 

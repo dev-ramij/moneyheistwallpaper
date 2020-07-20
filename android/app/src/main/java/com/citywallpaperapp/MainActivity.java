@@ -1,4 +1,4 @@
-package com.wallpaperreactapp;
+package com.citywallpaperapp;
 
 import com.facebook.react.ReactActivity;
 

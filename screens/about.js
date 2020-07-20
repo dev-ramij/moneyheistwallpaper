@@ -44,7 +44,7 @@ class AboutPage extends Component {
             <View style={{marginTop:20,alignItems:'center'}}>
                 <AdMobBanner
                     adSize="mediumRectangle"
-                    adUnitID="ca-app-pub-2962258148755216/7242538619"
+                    adUnitID="ca-app-pub-2962258148755216/5524629233"
                     didFailToReceiveAdWithError={err => console.log(err)} />
 
             </View>

@@ -10,7 +10,7 @@ const screens = {
         screen: HomePage,
         navigationOptions: ({ navigation }) => {
             return {
-                headerTitle: () => <AppHeader title="MONEY HEIST WALLPAPER" navigation={navigation} />
+                headerTitle: () => <AppHeader title="CITY WALLPAPER" navigation={navigation} />
             }
         }
     },
@@ -27,7 +27,7 @@ const screens = {
 const HomeStack = createStackNavigator(screens, {
     defaultNavigationOptions: {
         headerStyle: {
-            backgroundColor: '#26364e',
+            backgroundColor: '#0b3f47',
             height: 60
         }
     }

@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { Dimensions, FlatList, Image, ImageBackground, Modal as ReactModal, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+    Dimensions, FlatList, Image, ImageBackground, Modal as ReactModal, ToastAndroid,
+    PermissionsAndroid, Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View
+} from 'react-native';
 // import { TextButton } from 'react-native-material-buttons';
 import Modal from 'react-native-modal';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -7,9 +10,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import WallpaperManager from '@ajaybhatia/react-native-wallpaper-manager';
 import { Button } from 'react-native-paper';
 import { AdMobBanner, AdMobInterstitial } from 'react-native-admob';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
 export default class AllImages extends Component {
 
     state = {
@@ -21,6 +26,84 @@ export default class AllImages extends Component {
     }
 
     allImages = this.props.images;
+
+    downloadFileToTheStorage = async () => {
+
+
+        //Function to check the platform
+        //If iOS the start downloading
+        //If Android then ask for runtime permission
+
+        if (Platform.OS === 'ios') {
+            this.downloadImage();
+        } else {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'Storage Permission Required',
+                        message: 'This app needs access to your storage to download Photos',
+                    }
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    //Once user grant the permission start downloading
+                    console.log('Storage Permission Granted.');
+                    this.downloadImage();
+                } else {
+                    //If permission denied then show alert 'Storage Permission Not Granted'
+                    alert('Storage Permission Not Granted');
+                }
+            } catch (err) {
+                //To handle permission related issue
+                console.warn(err);
+            }
+        }
+
+    }
+    downloadImage = () => {
+        //Main function to download the image
+        ToastAndroid.show('Downloading ...', ToastAndroid.SHORT)
+        let date = new Date(); //To add the time suffix in filename
+        //Image URL which we want to download
+        //Getting the extention of the file
+        let ext = this.getExtention(this.state.src);
+        ext = '.' + ext[0];
+        //Get config and fs from RNFetchBlob
+        //config: To pass the downloading related options
+        //fs: To get the directory path in which we want our image to download
+        const { config, fs } = RNFetchBlob;
+        let PictureDir = fs.dirs.PictureDir;
+        let options = {
+            fileCache: true,
+            addAndroidDownloads: {
+                //Related to the Android only
+                useDownloadManager: true,
+                notification: true,
+                path:
+                    PictureDir +
+                    '/city_image_' + Math.floor(date.getTime() + date.getSeconds() / 2) + ext,
+                description: 'Image',
+            },
+        };
+        config(options)
+            .fetch('GET', this.state.src)
+            .then(res => {
+                //Showing alert after successful downloading
+                ToastAndroid.show('Image Downloaded Successfully.', ToastAndroid.SHORT)
+                AdMobInterstitial.setAdUnitID('ca-app-pub-2962258148755216/9272302559');
+                AdMobInterstitial.requestAd().then(() => {
+                    AdMobInterstitial.showAd();
+
+                });
+            });
+    };
+
+    getExtention = filename => {
+        //To get the file extension
+        return /[.]/.exec(filename) ? /[^.]+$/.exec(filename) : undefined;
+    };
+
+
 
     toggleModal = (src) => {
         this.setState({
@@ -57,10 +140,10 @@ export default class AllImages extends Component {
         return true
     }
 
-    onLoadImage = (id)=>{
+    onLoadImage = (id) => {
         this.state.loadedImages.push(id);
         this.setState({
-            loadedImages:this.state.loadedImages
+            loadedImages: this.state.loadedImages
         })
     }
 
@@ -74,7 +157,7 @@ export default class AllImages extends Component {
                         //     src: props.title.src
                         // })
                     }
-                    // disabled={this.isLoadedImage(props.title.id)}
+                // disabled={this.isLoadedImage(props.title.id)}
                 >
                     <Image
                         // onLoad={()=>this.onLoadImage(props.title.id)}
@@ -102,17 +185,14 @@ export default class AllImages extends Component {
             openModal: false
         })
         WallpaperManager.setWallpaper({ uri: String(this.state.src), screen: String(item) }, res => {
-            // this.setState({
-            //     isVisible: false,
-            //     openLoader: false
-            // })
-            AdMobInterstitial.setAdUnitID('ca-app-pub-2962258148755216/5218176356');
-            AdMobInterstitial.requestAd().then(() => {
-                AdMobInterstitial.showAd();
             this.setState({
                 isVisible: false,
                 openLoader: false
             })
+            AdMobInterstitial.setAdUnitID('ca-app-pub-2962258148755216/1479133517');
+            AdMobInterstitial.requestAd().then(() => {
+                AdMobInterstitial.showAd();
+
             });
 
         })
@@ -120,12 +200,12 @@ export default class AllImages extends Component {
     }
 
     render() {
-
+        console.log("All images: ", this.allImages)
         return (
             <SafeAreaView style={styles.container}>
                 <AdMobBanner
                     adSize="fullBanner"
-                    adUnitID="ca-app-pub-2962258148755216/7242538619"
+                    adUnitID="ca-app-pub-2962258148755216/9357623535"
                     didFailToReceiveAdWithError={err => console.log(err)} />
                 <FlatList
                     data={this.allImages}
@@ -148,19 +228,24 @@ export default class AllImages extends Component {
                         <ImageBackground source={{ uri: String(this.state.src) }}
                             style={styles.backgroundImage}>
                             <View style={styles.header}>
+
                                 <AntDesign
                                     style={styles.icon}
                                     name="left"
                                     size={30}
                                     color='black'
-                                    onPress={this.toggleModal} style={styles.icon}
+                                    onPress={this.toggleModal}
                                 />
-                                {/* <TouchableOpacity >
-                                    <View>
-                                        <Text style={styles.textButton}>Set As Wallpaper</Text>
-                                    </View>
-                                </TouchableOpacity> */}
-                                <View >
+                                <View style={styles.buttonGroup}>
+                                    <TouchableOpacity style={styles.downloadIcon}>
+                                        <AntDesign
+
+                                            name="download"
+                                            size={30}
+                                            color='white'
+                                            onPress={this.downloadFileToTheStorage}
+                                        />
+                                    </TouchableOpacity>
                                     <Button color="aqua" mode="text" style={styles.textButton} onPress={() => {
                                         console.log("click")
                                         this.setState({
@@ -170,41 +255,10 @@ export default class AllImages extends Component {
                                     }}>Set As Wallpaper</Button>
                                 </View>
 
-
-                                {/* <TextButton title='Set As Wallpaper' style={styles.textButton}
-                                    titleColor='teal' titleStyle={{
-                                        fontWeight: 'bold'
-                                    }} onPress={() => {
-                                        this.setState({
-                                            openModal: !this.state.openModal
-                                        })
-                                    }} /> */}
                             </View>
                         </ImageBackground>
 
                     </View>
-                    {/* {this.state.openModal && <Modal transparent
-                        visible={true}
-                        onRequestClose={() => {
-                            this.setState({
-                                openModal: !this.state.openModal
-                            })
-                        }}
-                    >
-
-                        <View style={styles.cardStyle}>
-
-
-                            <View style={styles.modalView}>
-                                <Text style={styles.text}>Set Wallpaper</Text>
-                            </View>
-                        </View>
-
-                    </Modal>} */}
-
-
-
-
 
                 </ReactModal>
 
@@ -304,12 +358,13 @@ const styles = StyleSheet.create({
         left: 120
     },
     textButton: {
-        marginLeft: 190,
+        flex: 0.5,
         color: 'teal',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+
     },
     item: {
-        backgroundColor: '#cca4b0',
+        backgroundColor: '#c1c1c1',
         borderRadius: 10,
         flex: 0.5,
         margin: 4,
@@ -345,7 +400,7 @@ const styles = StyleSheet.create({
     modal: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor:'white'
+        backgroundColor: 'white'
     },
     cardStyle: {
         flex: 1,
@@ -359,7 +414,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         width: '100%',
         flexDirection: 'row',
-        backgroundColor: '#83495c',
+        backgroundColor: '#4f6529',
         opacity: 0.8
     },
 
@@ -382,5 +437,17 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 16,
         top: 10,
+    },
+    downloadIcon: {
+        flex: 0.5,
+        right: 10,
+        position: 'absolute',
+        top: 8,
+    },
+    buttonGroup: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+
     }
 });

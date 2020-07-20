@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import TabViewExample from './tab';
+import AllImages from './tabs/all';
+
+const animated = require('../database/image.json');
+
 class HomePage extends Component {
     state = {}
 
@@ -9,7 +12,7 @@ class HomePage extends Component {
 
     render() {
         return (
-            <TabViewExample />
+            <AllImages images={animated} />
         );
     }
 }

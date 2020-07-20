@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.wallpaperreactapp"
+        applicationId "com.citywallpaperapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3
